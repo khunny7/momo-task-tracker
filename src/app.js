@@ -32,15 +32,6 @@ class App extends React.Component {
   }
 
   render() {
-    // const showCurrentProject = ({ match }) => {
-    //   return (
-    //     <Project
-    //       projectId={match.params.id}
-    //       history={this.props.history}
-    //     />
-    //   )
-    // }
-
     const showDashboard = (props) => (
       <Dashboard
         currentUser={this.state.currentUser}
@@ -48,12 +39,20 @@ class App extends React.Component {
       />
     )
 
+    const showButton = () => {
+      if (this.state.currentUser) {
+        return null
+      } else {
+        return <Button onClick={this.onLogInClicked}>Log in</Button>
+      }
+    }
+
     return (
       <div>
         <BrowserRouter>
           <div>
             <Route path='/' component={Header} />
-            <Button onClick={this.onLogInClicked}>Log in</Button>
+            {showButton()}
             <Route exact path='/' component={showDashboard} />
             <Route exact path='/project/:id' component={Project} />
             <Route exact path='/project/:pid/sprint/:sid' component={Sprint} />

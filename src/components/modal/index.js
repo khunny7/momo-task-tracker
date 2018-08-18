@@ -25,7 +25,7 @@ export class Modal extends React.Component {
       backgroundColor: '#fff',
       borderRadius: 5,
       width: '80%',
-      margin: '15% auto',
+      margin: '8% auto',
       padding: 30
     };
 
@@ -40,7 +40,6 @@ export class Modal extends React.Component {
 }
 
 Modal.propTypes = {
-  onClose: PropTypes.func.isRequired,
   show: PropTypes.bool,
   children: PropTypes.node
 };

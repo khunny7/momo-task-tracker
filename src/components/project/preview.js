@@ -18,27 +18,27 @@ export class ProjectPreview extends React.Component {
       <div>
         <div>
           <span>Start Date</span>
-          <span>{this.props.startDate}</span>
+          <span>{(new Date(this.props.projectPreviewItem.start)).toLocaleDateString()}</span>
         </div>
         <div>
           <span>End Date</span>
-          <span>{this.props.endDate}</span>
+          <span>{(new Date(this.props.projectPreviewItem.end)).toLocaleDateString()}</span>
         </div>
         <div>
           <span>name</span>
-          <span>{this.props.name}</span>
+          <span>{this.props.projectPreviewItem.name}</span>
         </div>
         <div>
           <span>description</span>
-          <span>{this.props.description}</span>
+          <span>{this.props.projectPreviewItem.description}</span>
         </div>
         <div>
           <span>goal</span>
-          <span>{this.props.goal}</span>
+          <span>{this.props.projectPreviewItem.goal}</span>
         </div>
         <div>
           <span>progress</span>
-          <span>{this.props.progress}</span>
+          <span>{this.props.projectPreviewItem.progress}</span>
         </div>
       </div>
     )

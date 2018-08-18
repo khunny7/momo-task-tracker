@@ -1,16 +1,7 @@
 import React from 'react'
-import _ from 'underscore'
 import { ProgressBar } from 'react-bootstrap'
 import './index.less'
 
-// Props
-// startDate
-// endDate
-// sprintIds
-// name
-// description
-// goal: hours
-// progress: hours
 export class SprintPreview extends React.Component {
   constructor(props) {
     super(props)
@@ -21,22 +12,22 @@ export class SprintPreview extends React.Component {
       <div className='sprint-preview-content'>
         <div className='sprint-preview-header'>
           <div className='name-container'>
-            {this.props.name}
+            {this.props.sprintPreviewItem.name}
           </div>
           <div className='description-container'>
-            {this.props.description}
+            {this.props.sprintPreviewItem.description}
           </div>
           <div>
-            <span>{(new Date(this.props.startDate)).toLocaleDateString()}</span>
+            <span>{(new Date(this.props.sprintPreviewItem.start)).toLocaleDateString()}</span>
             <span> - </span>
-            <span>{(new Date(this.props.endDate)).toLocaleDateString()}</span>
+            <span>{(new Date(this.props.sprintPreviewItem.end)).toLocaleDateString()}</span>
           </div>
         </div>
         <div className='sprint-preview-body'>
           <div>
-            {this.props.progress} / {this.props.goal} achieved
+            {this.props.sprintPreviewItem.progress} / {this.props.sprintPreviewItem.goal} achieved
             </div>
-          <ProgressBar now={this.props.progress / this.props.goal * 100} />
+          <ProgressBar now={this.props.sprintPreviewItem.progress / this.props.sprintPreviewItem.goal * 100} />
         </div>
       </div>
     )

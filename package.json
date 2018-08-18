@@ -36,8 +36,11 @@
     "bluebird": "^3.5.1",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
+    "react-block-ui": "^1.1.2",
     "react-bootstrap": "^0.32.1",
+    "react-day-picker": "^7.1.10",
     "react-dom": "^16.4.1",
+    "react-helmet": "^5.2.0",
     "react-router-dom": "^4.3.1",
     "underscore": "^1.9.1"
   },

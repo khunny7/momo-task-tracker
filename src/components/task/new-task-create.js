@@ -8,6 +8,7 @@ import {
 } from 'react-bootstrap'
 import { Modal } from '../modal'
 import { TimerView } from '../timer-view'
+import { MockDataRepository } from '../../repository/mock-data-repository'
 
 export class NewTaskCreate extends React.Component {
   constructor(props) {
@@ -48,6 +49,17 @@ export class NewTaskCreate extends React.Component {
 
   _onEndTask() {
     clearInterval(this.timerId)
+
+    const dataRepository = new MockDataRepository();
+
+    dataRepository.saveTask({
+      name: this.state.taskName,
+      start: this.state.start,
+      end: this.state.end,
+      timeStamp: (new Date()).valueOf(),
+    }).then((savedTask) => {
+      this.props.onTaskSaved(savedTask)
+    })
   }
 
   render() {
@@ -77,7 +89,7 @@ export class NewTaskCreate extends React.Component {
           </Button>
           <Button
             onClick={this.onEndTask}>
-            End Task
+            Save and End Task
           </Button>
         </Modal>
       </div>

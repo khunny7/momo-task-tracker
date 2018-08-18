@@ -1,6 +1,10 @@
 import React from 'react'
+import { Button } from 'react-bootstrap'
+import BlockUi from 'react-block-ui'
+import 'react-block-ui/style.css'
 import { ProjectPreview } from '../project/preview'
 import { MockDataRepository } from '../../repository/mock-data-repository'
+import { CrudProject } from '../project/crud-project'
 import './index.less'
 
 export class Dashboard extends React.Component {
@@ -8,10 +12,15 @@ export class Dashboard extends React.Component {
     super(props)
 
     this.state = {
-      projects: []
+      projects: [],
+      isCrudProjectOpen: false,
+      isUserDataLoaded: false,
     }
 
     this.onProjectSelected = this.onProjectSelected.bind(this)
+    this.onCreateProject = this._onCreateProject.bind(this)
+    this.onProjectCrudCanceled = this._onProjectCrudCanceled.bind(this)
+    this.onProjectSaved = this._onProjectSaved.bind(this)
   }
 
   componentDidMount() {
@@ -27,12 +36,18 @@ export class Dashboard extends React.Component {
   }
 
   _fetchUserAndUpdate(userId) {
+    this.setState({
+      projects: [],
+      isUserDataLoaded: false,
+    })
+
     const dataRepository = new MockDataRepository()
 
-    dataRepository.getUserAsync(userId).then((user) => {
+    return dataRepository.getUserAsync(userId).then((user) => {
       this.setState({
         userName: user.name,
         projects: user.projects,
+        isUserDataLoaded: true,
       })
     })
   }
@@ -43,24 +58,42 @@ export class Dashboard extends React.Component {
     this.props.history.push(`/project/${projectId}`)
   }
 
+  _onCreateProject() {
+    this.setState({
+      isCrudProjectOpen: true,
+    })
+  }
+
+  _onProjectSaved() {
+    this.setState({
+      isCrudProjectOpen: false,
+    })
+
+    this._fetchUserAndUpdate(this._getUserId())
+  }
+
+  _onProjectCrudCanceled() {
+    this.setState({
+      isCrudProjectOpen: false,
+    })
+  }
+
+  _getUserId() {
+    return this.props.currentUser ? this.props.currentUser.id : ''
+  }
+
   render() {
     const showProjectList = () => {
-      return (this.state.projects.map((project) => {
+      return (this.state.projects.map((projectInList) => {
         return (
           <div
-            key={project.id}
-            id={project.id}
-            data-name={project.name}
+            key={projectInList.id}
+            id={projectInList.id}
+            data-name={projectInList.name}
             onClick={this.onProjectSelected}
             className='project-preview-container'>
             <ProjectPreview
-              startDate={project.startDate}
-              endDate={project.endDate}
-              sprintIds={project.sprintIds}
-              name={project.name}
-              description={project.description}
-              goal={project.goal}
-              progress={project.progress}
+              projectPreviewItem={projectInList}
             />
           </div>
         )
@@ -69,12 +102,23 @@ export class Dashboard extends React.Component {
 
     return (
       <div>
-        <div>
-          {this.state.userName}
-        </div>
-        <div>
-          {showProjectList()}
-        </div>
+        <BlockUi blocking={!this.state.isUserDataLoaded}>
+          <div>
+            {this.state.userName}
+          </div>
+          <Button onClick={this.onCreateProject}>
+            Create Project
+          </Button>
+          <CrudProject
+            uid={this._getUserId()}
+            isOpen={this.state.isCrudProjectOpen}
+            onSave={this.onProjectSaved}
+            onCancel={this.onProjectCrudCanceled}
+          />
+          <div>
+            {showProjectList()}
+          </div>
+        </BlockUi>
       </div>
     )
   }

@@ -1,7 +1,8 @@
 import React from 'react'
 import _ from 'underscore'
-import { ProgressBar } from 'react-bootstrap'
+import { ProgressBar, Button } from 'react-bootstrap'
 import { SprintPreview } from '../sprint/preview'
+import { CrudSprint } from '../sprint/crud-sprint'
 import { MockDataRepository } from '../../repository/mock-data-repository'
 import './index.less'
 
@@ -19,9 +20,13 @@ export class Project extends React.Component {
 
     this.state = {
       isDataLoaded: false,
+      isCrudSprintOpen: false,
     }
 
     this.onClickSprint = this._onClickSprint.bind(this)
+    this.onCreateSprint = this._onCreateSprint.bind(this)
+    this.onSprintCrudCanceled = this._onSprintCrudCanceled.bind(this)
+    this.onSprintSaved = this._onSprintSaved.bind(this)
   }
 
   _onClickSprint(evt) {
@@ -32,23 +37,17 @@ export class Project extends React.Component {
   }
 
   componentWillMount() {
-    const dataRepository = new MockDataRepository()
-
-    dataRepository.getProjectByIdAsync(this.props.match.params.id).then((project) => {
-      let newState = {
-        isDataLoaded: true,
-      }
-
-      newState = _.extendOwn(newState, project)
-
-      this.setState(newState)
-    });
+    this._fetchProjectAndUpdate(this.props.match.params.id)
   }
 
   componentWillReceiveProps(newProps) {
-    const dataRepository = new MockDataRepository(newProps)
+    this._fetchProjectAndUpdate(newProps.match.params.id)
+  }
 
-    dataRepository.getProjectByIdAsync(newProps.match.params.id).then((project) => {
+  _fetchProjectAndUpdate(projectId) {
+    const dataRepository = new MockDataRepository()
+
+    return dataRepository.getProjectByIdAsync(projectId).then((project) => {
       let newState = {
         isDataLoaded: true,
       }
@@ -56,7 +55,27 @@ export class Project extends React.Component {
       newState = _.extendOwn(newState, project)
 
       this.setState(newState)
-    });
+    })
+  }
+
+  _onCreateSprint() {
+    this.setState({
+      isCrudSprintOpen: true,
+    })
+  }
+
+  _onSprintSaved() {
+    this.setState({
+      isCrudSprintOpen: false,
+    })
+
+    this._fetchProjectAndUpdate(this.state.id)
+  }
+
+  _onSprintCrudCanceled() {
+    this.setState({
+      isCrudSprintOpen: false,
+    })
   }
 
   render() {
@@ -73,9 +92,9 @@ export class Project extends React.Component {
               <span>{this.state.description}</span>
             </div>
             <div>
-              <span>{(new Date(this.state.startDate)).toLocaleDateString()}</span>
+              <span>{(new Date(this.state.start)).toLocaleDateString()}</span>
               <span> - </span>
-              <span>{(new Date(this.state.endDate)).toLocaleDateString()}</span>
+              <span>{(new Date(this.state.end)).toLocaleDateString()}</span>
             </div>
           </div>
           <div className='project-view-body'>
@@ -83,24 +102,28 @@ export class Project extends React.Component {
               {this.state.progress} / {this.state.goal} achieved
             </div>
             <ProgressBar now={this.state.progress / this.state.goal * 100} />
+            <Button onClick={this.onCreateSprint}>
+              Create Sprint
+            </Button>
+            <CrudSprint
+              pid={this.state.id}
+              isOpen={this.state.isCrudSprintOpen}
+              onSave={this.onSprintSaved}
+              onCancel={this.onSprintCrudCanceled}
+            />
             <div className='sprints-container'>
               {
-                this.state.sprints.map((sprint) =>
+                this.state.sprints.map((sprintPreviewItem) =>
                   (
                     <div
                       className='sprint-preview-container'
-                      key={sprint.id}
-                      id={sprint.id}
-                      data-name={sprint.name}
+                      key={sprintPreviewItem.id}
+                      id={sprintPreviewItem.id}
+                      data-name={sprintPreviewItem.name}
                       onClick={this.onClickSprint}
                     >
                       <SprintPreview
-                        name={sprint.name}
-                        description={sprint.description}
-                        startDate={sprint.startDate}
-                        endDate={sprint.endDate}
-                        progress={sprint.progress}
-                        goal={sprint.goal}
+                        sprintPreviewItem={sprintPreviewItem}
                       />
                     </div>
                   )

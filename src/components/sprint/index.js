@@ -18,6 +18,7 @@ export class Sprint extends React.Component {
     this.onStartNewTask = this._onStartNewTask.bind(this)
     this.onAddRecord = this._onAddRecord.bind(this)
     this.onSetIsNewTaskCreateOpen = this._onSetIsNewTaskCreateOpen.bind(this)
+    this.onTaskSaved = this._onTaskSaved.bind(this)
   }
 
   componentWillMount() {
@@ -40,6 +41,27 @@ export class Sprint extends React.Component {
 
       this.setState(newState)
     });
+  }
+
+  _onTaskSaved(task) {
+    this.setState({
+      isNewTaskCreateOpen: false,
+    })
+
+    const dataRepository = new MockDataRepository()
+
+    const taskToSave = {
+      id: task.id,
+      name: task.name,
+      timeStamp: task.timeStamp,
+      durationOnTask: task.end - task.start,
+    }
+
+    return dataRepository.addTaskToSprint(taskToSave, this.state.id).then(() => {
+      return this._loadSprintAsync(this.state.id).then(() => {
+        // refreshed
+      })
+    })
   }
 
   _onSetIsNewTaskCreateOpen(isOpen) {
@@ -70,9 +92,9 @@ export class Sprint extends React.Component {
               <span>{this.state.description}</span>
             </div>
             <div>
-              <span>{(new Date(this.state.startDate)).toLocaleDateString()}</span>
+              <span>{(new Date(this.state.start)).toLocaleDateString()}</span>
               <span> - </span>
-              <span>{(new Date(this.state.endDate)).toLocaleDateString()}</span>
+              <span>{(new Date(this.state.end)).toLocaleDateString()}</span>
             </div>
           </div>
           <div className='sprint-view-body'>
@@ -82,7 +104,10 @@ export class Sprint extends React.Component {
             <ProgressBar now={this.state.progress / this.state.goal * 100} />
             <Button onClick={this.onStartNewTask}>Start a new task</Button>
             <Button onClick={this.onAddRecord}>Add a record</Button>
-            <NewTaskCreate isOpen={this.state.isNewTaskCreateOpen} />
+            <NewTaskCreate
+              isOpen={this.state.isNewTaskCreateOpen}
+              onTaskSaved={this.onTaskSaved}
+            />
 
             <div className='tasks-container'>
               {
