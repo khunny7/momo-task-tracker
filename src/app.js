@@ -6,7 +6,12 @@ import { Sprint } from './components/sprint'
 import { Header } from './components/header'
 import { Footer } from './components/footer'
 import { BrowserRouter, Route, Link } from 'react-router-dom'
-import { MockDataRepository } from './repository/mock-data-repository';
+import { MockDataRepository } from './repository/mock-data-repository'
+import { getUserAsync, saveUserAsync } from './repository/firebase-user-repository'
+import AppData from './data/index'
+import firebase from 'firebase/app'
+import 'firebase/database'
+import 'firebase/auth'
 
 class App extends React.Component {
   constructor(props) {
@@ -20,15 +25,79 @@ class App extends React.Component {
     }
 
     this.onLogInClicked = this.onLogInClicked.bind(this)
+
+    this._initFireBase()
+  }
+
+  _initFireBase() {
+    if (!this.isFirebaseInitialized) {
+      var config = {
+        apiKey: "AIzaSyDtLmKovmTaOYQchddI93PzWFGdIYu1Tkk",
+        authDomain: "momo-task-tracker.firebaseapp.com",
+        databaseURL: "https://momo-task-tracker.firebaseio.com",
+        projectId: "momo-task-tracker",
+        storageBucket: "momo-task-tracker.appspot.com",
+        messagingSenderId: "145685964017"
+      };
+
+      firebase.initializeApp(config);
+
+      return firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+          return getUserAsync(user.uid).then((savedUser) => {
+            if (savedUser) {
+              AppData.setCurrentAppUser(savedUser)
+            } else {
+              const userToSave = {
+                uid: user.uid,
+                displayName: user.displayName,
+                email: user.email,
+                photoURL: user.photoURL,
+                projectPreviews: null
+              }
+
+              return saveUserAsync(userToSave).then(() => {
+                AppData.setCurrentAppUser(userToSave)
+              }).catch((error) => {
+                console.error(error)
+              })
+            }
+          }).catch((error) => {
+            console.error(error)
+          })
+        } else {
+          AppData.setCurrentAppUser(null)
+        }
+      })
+
+      this.isFirebaseInitialized = true;
+    }
   }
 
   onLogInClicked() {
-    this.setState({
-      currentUser: {
-        id: 'u01',
-        name: 'Kate Sohng'
-      }
+    const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+
+    firebase.auth().signInWithPopup(googleAuthProvider).then((result) => {
+      console.log('user succesfully signed in')
+    }).catch((error) => {
+      console.error(error)
     })
+  }
+
+  componentWillMount() {
+    this.setState({
+      currentUser: AppData.getCurrentAppUser()
+    })
+
+    this.appDataSubscriptionId = AppData.subscribeToAppUserChanged((currentUser) => {
+      this.setState({
+        currentUser,
+      })
+    })
+  }
+
+  componentWillUnmount() {
+    AppData.unsubscribeToAppUserChanged(this.appDataSubscriptionId)
   }
 
   render() {

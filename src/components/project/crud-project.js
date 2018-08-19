@@ -10,7 +10,7 @@ import {
 import PropTypes from 'prop-types';
 import { Modal } from '../modal'
 import { RangeDatePicker } from '../range-date-picker'
-import { MockDataRepository } from '../../repository/mock-data-repository'
+import { createProjectAsync } from '../../repository/firebase-data-repository'
 
 export class CrudProject extends React.Component {
   constructor(props) {
@@ -51,16 +51,14 @@ export class CrudProject extends React.Component {
         errors,
       })
     } else {
-      const dataRepository = new MockDataRepository()
-
-      dataRepository.createProjectAsync({
+      createProjectAsync({
         name: this.state.projectName,
         description: this.state.projectDescription,
         start: this.state.projectStart.valueOf(),
         end: this.state.projectEnd.valueOf(),
-        sprints: [],
-      }, this.props.uid).then((project) => {
-        this.props.onSave(project)
+        sprintPreviews: [],
+      }, this.props.uid).then(() => {
+        this.props.onSave()
       })
     }
   }
