@@ -1,9 +1,9 @@
 import React from 'react'
 import _ from 'underscore'
 import { ProgressBar, Button } from 'react-bootstrap'
-import { MockDataRepository } from '../../repository/mock-data-repository'
+import { getSprintAsync } from '../../repository/firebase-data-repository'
 import { TaskPreview } from '../task/preview'
-import { NewTaskCreate } from '../task/new-task-create'
+import { CrudTask } from '../task/crud-task'
 import './index.less'
 
 export class Sprint extends React.Component {
@@ -12,12 +12,12 @@ export class Sprint extends React.Component {
 
     this.state = {
       isDataLoaded: false,
-      isNewTaskCreateOpen: false,
+      isCrudTaskOpen: false,
     }
 
     this.onStartNewTask = this._onStartNewTask.bind(this)
     this.onAddRecord = this._onAddRecord.bind(this)
-    this.onSetIsNewTaskCreateOpen = this._onSetIsNewTaskCreateOpen.bind(this)
+    this.onSetIsCrudTaskOpen = this._onSetIsCrudTaskOpen.bind(this)
     this.onTaskSaved = this._onTaskSaved.bind(this)
   }
 
@@ -30,9 +30,7 @@ export class Sprint extends React.Component {
   }
 
   _loadSprintAsync(sprintId) {
-    const dataRepository = new MockDataRepository()
-
-    return dataRepository.getSprintByIdAsync(sprintId).then((sprint) => {
+    return getSprintAsync(sprintId).then((sprint) => {
       let newState = {
         isDataLoaded: true,
       }
@@ -45,33 +43,33 @@ export class Sprint extends React.Component {
 
   _onTaskSaved(task) {
     this.setState({
-      isNewTaskCreateOpen: false,
+      isCrudTaskOpen: false,
     })
 
-    const dataRepository = new MockDataRepository()
+    // const dataRepository = new MockDataRepository()
 
-    const taskToSave = {
-      id: task.id,
-      name: task.name,
-      timeStamp: task.timeStamp,
-      durationOnTask: task.end - task.start,
-    }
+    // const taskToSave = {
+    //   id: task.id,
+    //   name: task.name,
+    //   timeStamp: task.timeStamp,
+    //   durationOnTask: task.end - task.start,
+    // }
 
-    return dataRepository.addTaskToSprint(taskToSave, this.state.id).then(() => {
-      return this._loadSprintAsync(this.state.id).then(() => {
-        // refreshed
-      })
-    })
+    // return dataRepository.addTaskToSprint(taskToSave, this.state.id).then(() => {
+    //   return this._loadSprintAsync(this.state.id).then(() => {
+    //     // refreshed
+    //   })
+    // })
   }
 
-  _onSetIsNewTaskCreateOpen(isOpen) {
+  _onSetIsCrudTaskOpen(isOpen) {
     this.setState({
-      isNewTaskCreateOpen: isOpen,
+      isCrudTaskOpen: isOpen,
     })
   }
 
   _onStartNewTask() {
-    this._onSetIsNewTaskCreateOpen(true)
+    this._onSetIsCrudTaskOpen(true)
   }
 
   _onAddRecord() {
@@ -104,14 +102,15 @@ export class Sprint extends React.Component {
             <ProgressBar now={this.state.progress / this.state.goal * 100} />
             <Button onClick={this.onStartNewTask}>Start a new task</Button>
             <Button onClick={this.onAddRecord}>Add a record</Button>
-            <NewTaskCreate
-              isOpen={this.state.isNewTaskCreateOpen}
+            <CrudTask
+              isOpen={this.state.isCrudTaskOpen}
               onTaskSaved={this.onTaskSaved}
+              onSetTaskOpen={this.onSetIsCrudTaskOpen}
             />
 
             <div className='tasks-container'>
               {
-                this.state.tasks.map((task) =>
+                _.map(this.state.taskPreviews, (task) =>
                   (
                     <div
                       className='task-preview-container'

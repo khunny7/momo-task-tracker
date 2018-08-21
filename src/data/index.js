@@ -5,6 +5,7 @@ class AppData {
   constructor() {
     this.currentAuthUser = null;
     this.currentAppUser = null;
+    this.currentProject = null;
     this.callbacks = {};
     this.nextCallBackId = 0;
   }
@@ -25,6 +26,14 @@ class AppData {
     _.each(this.callbacks, (callback) => {
       callback(appUser)
     })
+  }
+
+  getCurrentProject() {
+    return this.currentProject
+  }
+
+  setCurrentProject(project) {
+    this.currentProject = project
   }
 
   subscribeToAppUserChanged(cb) {

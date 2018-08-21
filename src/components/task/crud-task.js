@@ -10,7 +10,7 @@ import { Modal } from '../modal'
 import { TimerView } from '../timer-view'
 import { MockDataRepository } from '../../repository/mock-data-repository'
 
-export class NewTaskCreate extends React.Component {
+export class CrudTask extends React.Component {
   constructor(props) {
     super(props)
 
@@ -21,6 +21,11 @@ export class NewTaskCreate extends React.Component {
     this.onTaskNameChange = this._onTaskNameChange.bind(this)
     this.onStartTask = this._onStartTask.bind(this)
     this.onEndTask = this._onEndTask.bind(this)
+    this.onClose = this._onClose.bind(this)
+  }
+
+  _onClose = () => {
+    this.props.onSetTaskOpen(false)
   }
 
   toggleModal = () => {
@@ -90,6 +95,10 @@ export class NewTaskCreate extends React.Component {
           <Button
             onClick={this.onEndTask}>
             Save and End Task
+          </Button>
+          <Button
+            onClick={this.onClose}>
+            Close
           </Button>
         </Modal>
       </div>

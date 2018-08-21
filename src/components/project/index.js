@@ -3,7 +3,8 @@ import _ from 'underscore'
 import { ProgressBar, Button } from 'react-bootstrap'
 import { SprintPreview } from '../sprint/preview'
 import { CrudSprint } from '../sprint/crud-sprint'
-import { MockDataRepository } from '../../repository/mock-data-repository'
+import { getProjectAsync } from '../../repository/firebase-data-repository'
+import AppData from '../../data/index'
 import './index.less'
 
 // Props
@@ -45,9 +46,7 @@ export class Project extends React.Component {
   }
 
   _fetchProjectAndUpdate(projectId) {
-    const dataRepository = new MockDataRepository()
-
-    return dataRepository.getProjectByIdAsync(projectId).then((project) => {
+    return getProjectAsync(projectId).then((project) => {
       let newState = {
         isDataLoaded: true,
       }
@@ -84,12 +83,10 @@ export class Project extends React.Component {
         <div className='project-view-container'>
           <div className='project-view-header'>
             <div className='name-container'>
-              <span>name</span>
-              <span>{this.state.name}</span>
+              {this.state.name}
             </div>
             <div className='description-container'>
-              <span>description</span>
-              <span>{this.state.description}</span>
+              {this.state.description}
             </div>
             <div>
               <span>{(new Date(this.state.start)).toLocaleDateString()}</span>
@@ -113,7 +110,7 @@ export class Project extends React.Component {
             />
             <div className='sprints-container'>
               {
-                this.state.sprints.map((sprintPreviewItem) =>
+                _.map(this.state.sprintPreviews, (sprintPreviewItem) =>
                   (
                     <div
                       className='sprint-preview-container'

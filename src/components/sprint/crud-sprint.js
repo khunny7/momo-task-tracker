@@ -13,7 +13,7 @@ import {
 import PropTypes from 'prop-types';
 import { Modal } from '../modal'
 import { RangeDatePicker } from '../range-date-picker'
-import { MockDataRepository } from '../../repository/mock-data-repository'
+import { createSprintAsync } from '../../repository/firebase-data-repository'
 
 export class CrudSprint extends React.Component {
   constructor(props) {
@@ -62,9 +62,7 @@ export class CrudSprint extends React.Component {
         errors,
       })
     } else {
-      const dataRepository = new MockDataRepository()
-
-      dataRepository.createSprintAsync({
+      createSprintAsync({
         name: this.state.sprintName,
         description: this.state.sprintDescription,
         start: this.state.sprintStart.valueOf(),
