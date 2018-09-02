@@ -6,12 +6,15 @@ import { Sprint } from './components/sprint'
 import { Header } from './components/header'
 import { Footer } from './components/footer'
 import { BrowserRouter, Route, Link } from 'react-router-dom'
-import { MockDataRepository } from './repository/mock-data-repository'
 import { getUserAsync, saveUserAsync } from './repository/firebase-user-repository'
 import AppData from './data/index'
 import firebase from 'firebase/app'
 import 'firebase/database'
 import 'firebase/auth'
+import storeFactory from './store'
+import { setCurrentUser } from './store/actions'
+
+window.store = storeFactory()
 
 class App extends React.Component {
   constructor(props) {
@@ -47,6 +50,9 @@ class App extends React.Component {
           return getUserAsync(user.uid).then((savedUser) => {
             if (savedUser) {
               AppData.setCurrentAppUser(savedUser)
+              store.dispatch(setCurrentUser({
+                savedUser
+              }))
             } else {
               const userToSave = {
                 uid: user.uid,
@@ -58,6 +64,10 @@ class App extends React.Component {
 
               return saveUserAsync(userToSave).then(() => {
                 AppData.setCurrentAppUser(userToSave)
+
+                store.dispatch(setCurrentUser({
+                  userToSave
+                }))
               }).catch((error) => {
                 console.error(error)
               })
@@ -67,6 +77,8 @@ class App extends React.Component {
           })
         } else {
           AppData.setCurrentAppUser(null)
+
+          store.dispatch(setCurrentUser(null))
         }
       })
 
