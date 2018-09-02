@@ -39,6 +39,7 @@
     "react": "^16.4.1",
     "react-block-ui": "^1.1.2",
     "react-bootstrap": "^0.32.1",
+    "react-circular-progressbar": "^1.0.0",
     "react-day-picker": "^7.1.10",
     "react-dom": "^16.4.1",
     "react-helmet": "^5.2.0",

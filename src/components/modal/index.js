@@ -17,7 +17,7 @@ export class Modal extends React.Component {
       padding: 50,
       width: '100%',
       height: '100%',
-      zIndex: 10,
+      zIndex: 1,
     };
 
     // The modal "window"
@@ -25,6 +25,7 @@ export class Modal extends React.Component {
       backgroundColor: '#fff',
       borderRadius: 5,
       width: '80%',
+      minWidth: '450px',
       margin: '8% auto',
       padding: 30
     };

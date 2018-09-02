@@ -1,4 +1,7 @@
 import React from 'react'
+import {
+  getDurationInString,
+} from '../../utils/time-utils'
 
 export class TaskPreview extends React.Component {
   constructor(props) {
@@ -7,15 +10,15 @@ export class TaskPreview extends React.Component {
 
   render() {
     return (
-      <div>
-        <div>
+      <div className='task-preview clearfix'>
+        <div className='name'>
           {this.props.name}
         </div>
-        <div>
-          {this.props.lastModified}
+        <div className='time-spent'>
+          {getDurationInString(this.props.timeSpent)}
         </div>
-        <div>
-          {this.props.durationOnTask}
+        <div className='time-stamp'>
+          {(new Date(this.props.timeStamp)).toLocaleString()}
         </div>
       </div>
     )

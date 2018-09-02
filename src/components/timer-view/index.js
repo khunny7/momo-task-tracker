@@ -1,4 +1,5 @@
 import React from 'react'
+import { getDurationInString } from '../../utils/time-utils'
 
 export class TimerView extends React.Component {
     constructor(props) {
@@ -14,19 +15,9 @@ export class TimerView extends React.Component {
             }
         }
 
-        const hours = Math.floor(timeDiff/100/60/60)
-
-        timeDiff -= hours * 1000 * 60 * 60;
-
-        const minutes = Math.floor(timeDiff/1000/60)
-
-        timeDiff -= minutes * 1000 * 60
-
-        const seconds = Math.floor(timeDiff/1000);
-
         return (
             <div>
-                {`${hours}:${minutes}:${seconds}`}
+                {getDurationInString(timeDiff)}
             </div>
         )
     }

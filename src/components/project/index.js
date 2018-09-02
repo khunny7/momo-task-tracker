@@ -4,7 +4,10 @@ import { ProgressBar, Button } from 'react-bootstrap'
 import { SprintPreview } from '../sprint/preview'
 import { CrudSprint } from '../sprint/crud-sprint'
 import { getProjectAsync } from '../../repository/firebase-data-repository'
-import AppData from '../../data/index'
+import {
+  getDurationInHours,
+  getDurationInString,
+} from '../../utils/time-utils'
 import './index.less'
 
 // Props
@@ -83,7 +86,7 @@ export class Project extends React.Component {
         <div className='project-view-container'>
           <div className='project-view-header'>
             <div className='name-container'>
-              {this.state.name}
+              Project: {this.state.name}
             </div>
             <div className='description-container'>
               {this.state.description}
@@ -96,9 +99,9 @@ export class Project extends React.Component {
           </div>
           <div className='project-view-body'>
             <div>
-              {this.state.progress} / {this.state.goal} achieved
+              {getDurationInString(this.state.progress, 'progress')} / {this.state.goal} achieved
             </div>
-            <ProgressBar now={this.state.progress / this.state.goal * 100} />
+            <ProgressBar now={getDurationInHours(this.state.progress) / this.state.goal * 100} />
             <Button onClick={this.onCreateSprint}>
               Create Sprint
             </Button>
@@ -110,8 +113,8 @@ export class Project extends React.Component {
             />
             <div className='sprints-container'>
               {
-                _.map(this.state.sprintPreviews, (sprintPreviewItem) =>
-                  (
+                _.map(this.state.sprintPreviews, (sprintPreviewItem) => {
+                  return (
                     <div
                       className='sprint-preview-container'
                       key={sprintPreviewItem.id}
@@ -124,7 +127,7 @@ export class Project extends React.Component {
                       />
                     </div>
                   )
-                )
+                })
               }
             </div>
           </div>

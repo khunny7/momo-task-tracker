@@ -1,7 +1,6 @@
 import React from 'react'
 import _ from 'underscore'
 import { Button } from 'react-bootstrap'
-import BlockUi from 'react-block-ui'
 import 'react-block-ui/style.css'
 import { ProjectPreview } from '../project/preview'
 import { CrudProject } from '../project/crud-project'

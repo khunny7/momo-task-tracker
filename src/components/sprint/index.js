@@ -1,9 +1,15 @@
 import React from 'react'
 import _ from 'underscore'
-import { ProgressBar, Button } from 'react-bootstrap'
+import { Col, Button } from 'react-bootstrap'
+import BlockUi from 'react-block-ui'
 import { getSprintAsync } from '../../repository/firebase-data-repository'
 import { TaskPreview } from '../task/preview'
 import { CrudTask } from '../task/crud-task'
+import CircularProgressbar from 'react-circular-progressbar'
+import {
+  getDurationInHours,
+  getDurationInString,
+} from '../../utils/time-utils'
 import './index.less'
 
 export class Sprint extends React.Component {
@@ -30,6 +36,10 @@ export class Sprint extends React.Component {
   }
 
   _loadSprintAsync(sprintId) {
+    this.setState({
+      isDataLoaded: false,
+    })
+
     return getSprintAsync(sprintId).then((sprint) => {
       let newState = {
         isDataLoaded: true,
@@ -46,20 +56,7 @@ export class Sprint extends React.Component {
       isCrudTaskOpen: false,
     })
 
-    // const dataRepository = new MockDataRepository()
-
-    // const taskToSave = {
-    //   id: task.id,
-    //   name: task.name,
-    //   timeStamp: task.timeStamp,
-    //   durationOnTask: task.end - task.start,
-    // }
-
-    // return dataRepository.addTaskToSprint(taskToSave, this.state.id).then(() => {
-    //   return this._loadSprintAsync(this.state.id).then(() => {
-    //     // refreshed
-    //   })
-    // })
+    this._loadSprintAsync(this.props.match.params.sid)
   }
 
   _onSetIsCrudTaskOpen(isOpen) {
@@ -76,14 +73,13 @@ export class Sprint extends React.Component {
 
   }
 
-  render() {
+  _getContent() {
     if (this.state.isDataLoaded) {
       return (
-        <div className='sprint-view-container'>
+        <div>
           <div className='sprint-view-header'>
             <div className='name-container'>
-              <span>name</span>
-              <span>{this.state.name}</span>
+              Sprint: {this.state.name}
             </div>
             <div className='description-container'>
               <span>description</span>
@@ -96,45 +92,65 @@ export class Sprint extends React.Component {
             </div>
           </div>
           <div className='sprint-view-body'>
-            <div>
-              {this.state.progress} / {this.state.goal} achieved
-            </div>
-            <ProgressBar now={this.state.progress / this.state.goal * 100} />
             <Button onClick={this.onStartNewTask}>Start a new task</Button>
             <Button onClick={this.onAddRecord}>Add a record</Button>
             <CrudTask
               isOpen={this.state.isCrudTaskOpen}
+              sid={this.state.id}
+              pid={this.props.match.params.pid}
               onTaskSaved={this.onTaskSaved}
               onSetTaskOpen={this.onSetIsCrudTaskOpen}
             />
+            <Col xs={8} sm={6} md={4}>
+              <div className='circular-progress-container'>
+                <CircularProgressbar
+                  percentage={getDurationInHours(this.state.progress) / this.state.goal * 100}
+                  text={getDurationInString(this.state.progress)}
+                  initialAnimation={true}
+                  strokeWidth={5}
+                />
+              </div>
+            </Col>
+            <Col xs={12} sm={6} md={8}>
 
-            <div className='tasks-container'>
-              {
-                _.map(this.state.taskPreviews, (task) =>
-                  (
-                    <div
-                      className='task-preview-container'
-                      key={task.id}
-                      id={task.id}
-                      data-name={task.name}
-                      onClick={this.onClickTask}
-                    >
-                      <TaskPreview
+              <div className='tasks-container'>
+                {
+                  _.map(this.state.taskPreviews, (task) =>
+                    (
+                      <div
+                        className='task-preview-container'
+                        key={task.id}
                         id={task.id}
-                        name={task.name}
-                        lastModified={task.lastModified}
-                        durationOnTask={task.durationOnTask}
-                      />
-                    </div>
+                        data-name={task.name}
+                        onClick={this.onClickTask}
+                      >
+                        <TaskPreview
+                          id={task.id}
+                          name={task.name}
+                          timeSpent={task.timeSpent}
+                          timeStamp={task.timeStamp}
+                        />
+                      </div>
+                    )
                   )
-                )
-              }
-            </div>
+                }
+              </div>
+            </Col>
           </div>
         </div>
       )
     } else {
       return (<div>Fetching sprint</div>)
     }
+  }
+
+  render() {
+    return (
+      <div className='sprint-view-container'>
+        <BlockUi blocking={!this.state.isDataLoaded}>
+          {this._getContent()}
+        </BlockUi>
+      </div>
+    )
   }
 }

@@ -1,5 +1,9 @@
 import React from 'react'
 import { ProgressBar } from 'react-bootstrap'
+import {
+  getDurationInHours,
+  getDurationInString,
+} from '../../utils/time-utils'
 import './index.less'
 
 export class SprintPreview extends React.Component {
@@ -25,9 +29,9 @@ export class SprintPreview extends React.Component {
         </div>
         <div className='sprint-preview-body'>
           <div>
-            {this.props.sprintPreviewItem.progress} / {this.props.sprintPreviewItem.goal} achieved
+            {getDurationInString(this.props.sprintPreviewItem.progress, 'progress')} / {this.props.sprintPreviewItem.goal} hours
             </div>
-          <ProgressBar now={this.props.sprintPreviewItem.progress / this.props.sprintPreviewItem.goal * 100} />
+          <ProgressBar now={getDurationInHours(this.props.sprintPreviewItem.progress) / this.props.sprintPreviewItem.goal * 100} />
         </div>
       </div>
     )
