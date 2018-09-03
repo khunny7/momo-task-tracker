@@ -1,10 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import _ from 'underscore'
 import { Col, Button } from 'react-bootstrap'
-import BlockUi from 'react-block-ui'
-import { getSprintAsync } from '../../repository/firebase-data-repository'
 import { TaskPreview } from '../task/preview'
 import { CrudTask } from '../task/crud-task'
+import AppData from '../../data/index'
 import CircularProgressbar from 'react-circular-progressbar'
 import {
   getDurationInHours,
@@ -12,7 +12,7 @@ import {
 } from '../../utils/time-utils'
 import './index.less'
 
-export class Sprint extends React.Component {
+class Sprint extends React.Component {
   constructor(props) {
     super(props)
 
@@ -27,36 +27,12 @@ export class Sprint extends React.Component {
     this.onTaskSaved = this._onTaskSaved.bind(this)
   }
 
-  componentWillMount() {
-    this._loadSprintAsync(this.props.match.params.sid)
-  }
-
-  componentWillReceiveProps(newProps) {
-    this._loadSprintAsync(newProps.match.params.sid)
-  }
-
-  _loadSprintAsync(sprintId) {
-    this.setState({
-      isDataLoaded: false,
-    })
-
-    return getSprintAsync(sprintId).then((sprint) => {
-      let newState = {
-        isDataLoaded: true,
-      }
-
-      newState = _.extendOwn(newState, sprint)
-
-      this.setState(newState)
-    });
-  }
-
   _onTaskSaved(task) {
     this.setState({
       isCrudTaskOpen: false,
     })
 
-    this._loadSprintAsync(this.props.match.params.sid)
+    AppData.refreshCurrentSprint()
   }
 
   _onSetIsCrudTaskOpen(isOpen) {
@@ -74,21 +50,21 @@ export class Sprint extends React.Component {
   }
 
   _getContent() {
-    if (this.state.isDataLoaded) {
+    if (this.props.currentSprint) {
       return (
         <div>
           <div className='sprint-view-header'>
             <div className='name-container'>
-              Sprint: {this.state.name}
+              Sprint: {this.props.currentSprint.name}
             </div>
             <div className='description-container'>
               <span>description</span>
-              <span>{this.state.description}</span>
+              <span>{this.props.currentSprint.description}</span>
             </div>
             <div>
-              <span>{(new Date(this.state.start)).toLocaleDateString()}</span>
+              <span>{(new Date(this.props.currentSprint.start)).toLocaleDateString()}</span>
               <span> - </span>
-              <span>{(new Date(this.state.end)).toLocaleDateString()}</span>
+              <span>{(new Date(this.props.currentSprint.end)).toLocaleDateString()}</span>
             </div>
           </div>
           <div className='sprint-view-body'>
@@ -96,16 +72,16 @@ export class Sprint extends React.Component {
             <Button onClick={this.onAddRecord}>Add a record</Button>
             <CrudTask
               isOpen={this.state.isCrudTaskOpen}
-              sid={this.state.id}
-              pid={this.props.match.params.pid}
+              sid={this.props.currentSprint.id}
+              pid={this.props.pid}
               onTaskSaved={this.onTaskSaved}
               onSetTaskOpen={this.onSetIsCrudTaskOpen}
             />
             <Col xs={8} sm={6} md={4}>
               <div className='circular-progress-container'>
                 <CircularProgressbar
-                  percentage={getDurationInHours(this.state.progress) / this.state.goal * 100}
-                  text={getDurationInString(this.state.progress)}
+                  percentage={getDurationInHours(this.props.currentSprint.progress) / this.props.currentSprint.goal * 100}
+                  text={getDurationInString(this.props.currentSprint.progress)}
                   initialAnimation={true}
                   strokeWidth={5}
                 />
@@ -115,7 +91,7 @@ export class Sprint extends React.Component {
 
               <div className='tasks-container'>
                 {
-                  _.map(this.state.taskPreviews, (task) =>
+                  _.map(this.props.currentSprint.taskPreviews, (task) =>
                     (
                       <div
                         className='task-preview-container'
@@ -147,10 +123,17 @@ export class Sprint extends React.Component {
   render() {
     return (
       <div className='sprint-view-container'>
-        <BlockUi blocking={!this.state.isDataLoaded}>
-          {this._getContent()}
-        </BlockUi>
+        {this._getContent()}
       </div>
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    currentSprint: state.currentSprint,
+    pid: state.currentProject ? state.currentProject.id : null,
+  }
+}
+
+export default connect(mapStateToProps)(Sprint)

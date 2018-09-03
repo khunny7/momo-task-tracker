@@ -37,5 +37,6 @@ export const currentTask = (state = null, action) => {
 export default combineReducers({
   currentUser,
   currentProject,
-
+  currentSprint,
+  currentTask,
 })

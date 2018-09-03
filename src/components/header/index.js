@@ -1,104 +1,67 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Breadcrumb } from 'react-bootstrap'
+import AppData from '../../data'
 
-export class Header extends React.Component {
+class Header extends React.Component {
   constructor(props) {
     super(props)
 
     this.onDashboardClick = this._onDashboardClick.bind(this)
 
-    this.state = {
-      currentProject: null,
-      currentSprint: null,
-      currentTask: null,
-    }
+    // this.state = {
+    //   currentProject: null,
+    //   currentSprint: null,
+    //   currentTask: null,
+    // }
   }
 
   _onDashboardClick() {
-    this.props.history.push('/')
+    // this.props.history.push('/')
   }
 
-  componentDidMount() {
-    this.setStateFromPath(this.props.location.pathname)
-  }
-
-  componentWillReceiveProps(newProps) {
-    this.setStateFromPath(newProps.location.pathname)
-  }
-
-  setStateFromPath(pathString) {
-    let currentProject = null;
-    let currentSprint = null;
-    let currentTask = null;
-
-    let parsedPath = (new RegExp('project/([^//]+)/sprint/([^//]+)/task/([^//]+)')).exec(pathString)
-
-    if (parsedPath != null) {
-      currentTask = { id: parsedPath[3] }
-      currentSprint = { id: parsedPath[2] }
-      currentProject = { id: parsedPath[1] }
-    }
-
-    parsedPath = (new RegExp('project/([^//]+)/sprint/([^//]+)')).exec(pathString)
-
-    if (parsedPath != null) {
-      currentSprint = { id: parsedPath[2] }
-      currentProject = { id: parsedPath[1] }
-    }
-
-    parsedPath = (new RegExp('project/([^//]+)')).exec(pathString)
-
-    if (parsedPath != null) {
-      currentProject = { id: parsedPath[1] }
-    }
-
-
-    this.setState({
-      currentProject,
-      currentSprint,
-      currentTask
-    })
-  }
 
   render() {
     const getBreadCrumbTask = () => {
-      if (this.state.currentTask) {
+      if (this.props.currentTask) {
         return (
-          <Breadcrumb.Item active>{this.state.currentTask.id}</Breadcrumb.Item>
+          <Breadcrumb.Item active>{this.props.currentTask.id}</Breadcrumb.Item>
         )
       } else {
-        return (<div></div>)
+        return null;
       }
     }
 
     const getBreadCrumbSprint = () => {
-      if (this.state.currentSprint) {
+      if (this.props.currentSprint) {
         return (
-          <Breadcrumb.Item active={this.state.currentTask == null}>
-            {this.state.currentSprint.id}
+          <Breadcrumb.Item active={this.props.currentTask == null}>
+            {this.props.currentSprint.id}
           </Breadcrumb.Item>
         )
       } else {
-        return (<div></div>)
+        return null;
       }
     }
 
     const getBreadCrumbProject = () => {
-      if (this.state.currentProject) {
+      if (this.props.currentProject) {
         return (
-          <Breadcrumb.Item active={this.state.currentSprint == null}>
-            {this.state.currentProject.id}
+          <Breadcrumb.Item
+            onClick={() => AppData.goToProject(this.props.currentProject.id)}
+            active={this.props.currentSprint == null}>
+            {this.props.currentProject.id}
           </Breadcrumb.Item>
         )
       } else {
-        return (<div></div>)
+        return null;
       }
     }
 
     return (
       <div>
         <Breadcrumb>
-          <Breadcrumb.Item onClick={this.onDashboardClick}>Dashboard</Breadcrumb.Item>
+          <Breadcrumb.Item onClick={() => AppData.goToUser(this.props.currentUser.id)}>Dashboard</Breadcrumb.Item>
           {getBreadCrumbProject()}
           {getBreadCrumbSprint()}
           {getBreadCrumbTask()}
@@ -107,3 +70,13 @@ export class Header extends React.Component {
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    currentUser: state.currentUser,
+    currentProject: state.currentProject,
+    currentSprint: state.currentSprint,
+  }
+}
+
+export default connect(mapStateToProps)(Header)

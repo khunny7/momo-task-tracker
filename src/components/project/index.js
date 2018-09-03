@@ -1,9 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import _ from 'underscore'
 import { ProgressBar, Button } from 'react-bootstrap'
 import { SprintPreview } from '../sprint/preview'
 import { CrudSprint } from '../sprint/crud-sprint'
-import { getProjectAsync } from '../../repository/firebase-data-repository'
+import AppData from '../../data/index'
 import {
   getDurationInHours,
   getDurationInString,
@@ -18,7 +19,7 @@ import './index.less'
 // description
 // goal: hours
 // progress: hours
-export class Project extends React.Component {
+class Project extends React.Component {
   constructor(props) {
     super(props)
 
@@ -35,29 +36,8 @@ export class Project extends React.Component {
 
   _onClickSprint(evt) {
     const sprintId = evt.currentTarget.id
-    const sprintName = evt.currentTarget.dataset.name
 
-    this.props.history.push(`/project/${this.state.id}/sprint/${sprintId}`)
-  }
-
-  componentWillMount() {
-    this._fetchProjectAndUpdate(this.props.match.params.id)
-  }
-
-  componentWillReceiveProps(newProps) {
-    this._fetchProjectAndUpdate(newProps.match.params.id)
-  }
-
-  _fetchProjectAndUpdate(projectId) {
-    return getProjectAsync(projectId).then((project) => {
-      let newState = {
-        isDataLoaded: true,
-      }
-
-      newState = _.extendOwn(newState, project)
-
-      this.setState(newState)
-    })
+    AppData.goToSprint(this.props.currentProject.id, sprintId)
   }
 
   _onCreateSprint() {
@@ -71,7 +51,7 @@ export class Project extends React.Component {
       isCrudSprintOpen: false,
     })
 
-    this._fetchProjectAndUpdate(this.state.id)
+    AppData.refreshCurrentProject();
   }
 
   _onSprintCrudCanceled() {
@@ -81,39 +61,39 @@ export class Project extends React.Component {
   }
 
   render() {
-    if (this.state.isDataLoaded) {
+    if (this.props.currentProject) {
       return (
         <div className='project-view-container'>
           <div className='project-view-header'>
             <div className='name-container'>
-              Project: {this.state.name}
+              Project: {this.props.currentProject.name}
             </div>
             <div className='description-container'>
-              {this.state.description}
+              {this.props.currentProject.description}
             </div>
             <div>
-              <span>{(new Date(this.state.start)).toLocaleDateString()}</span>
+              <span>{(new Date(this.props.currentProject.start)).toLocaleDateString()}</span>
               <span> - </span>
-              <span>{(new Date(this.state.end)).toLocaleDateString()}</span>
+              <span>{(new Date(this.props.currentProject.end)).toLocaleDateString()}</span>
             </div>
           </div>
           <div className='project-view-body'>
             <div>
-              {getDurationInString(this.state.progress, 'progress')} / {this.state.goal} achieved
+              {getDurationInString(this.props.currentProject.progress, 'progress')} / {this.props.currentProject.goal} achieved
             </div>
-            <ProgressBar now={getDurationInHours(this.state.progress) / this.state.goal * 100} />
+            <ProgressBar now={getDurationInHours(this.props.currentProject.progress) / this.props.currentProject.goal * 100} />
             <Button onClick={this.onCreateSprint}>
               Create Sprint
             </Button>
             <CrudSprint
-              pid={this.state.id}
+              pid={this.props.currentProject.id}
               isOpen={this.state.isCrudSprintOpen}
               onSave={this.onSprintSaved}
               onCancel={this.onSprintCrudCanceled}
             />
             <div className='sprints-container'>
               {
-                _.map(this.state.sprintPreviews, (sprintPreviewItem) => {
+                _.map(this.props.currentProject.sprintPreviews, (sprintPreviewItem) => {
                   return (
                     <div
                       className='sprint-preview-container'
@@ -138,3 +118,12 @@ export class Project extends React.Component {
     }
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    currentUser: state.currentUser,
+    currentProject: state.currentProject,
+  }
+}
+
+export default connect(mapStateToProps)(Project)

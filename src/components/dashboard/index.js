@@ -1,6 +1,7 @@
 import React from 'react'
 import _ from 'underscore'
 import { Button } from 'react-bootstrap'
+import { connect } from 'react-redux'
 import 'react-block-ui/style.css'
 import { ProjectPreview } from '../project/preview'
 import { CrudProject } from '../project/crud-project'
@@ -8,14 +9,12 @@ import { getUserAsync, saveUserAsync } from '../../repository/firebase-user-repo
 import AppData from '../../data/index'
 import './index.less'
 
-export class Dashboard extends React.Component {
+class Dashboard extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      // projects: [],
       isCrudProjectOpen: false,
-      // isUserDataLoaded: false,
     }
 
     this.onProjectSelected = this.onProjectSelected.bind(this)
@@ -24,37 +23,10 @@ export class Dashboard extends React.Component {
     this.onProjectSaved = this._onProjectSaved.bind(this)
   }
 
-  // componentDidMount() {
-  //   if (this.props.currentUser) {
-  //     this._fetchUserAndUpdate(this.props.currentUser.id)
-  //   }
-  // }
-
-  // componentWillReceiveProps(newProps) {
-  //   if (newProps.currentUser) {
-  //     this._fetchUserAndUpdate(newProps.currentUser.id)
-  //   }
-  // }
-
-  // _fetchUserAndUpdate(userId) {
-  //   this.setState({
-  //     projects: [],
-  //     isUserDataLoaded: false,
-  //   })
-
-  //   return getUserAsync(userId).then((user) => {
-  //     this.setState({
-  //       userDisplayName: user.displayName,
-  //       projects: user.projects,
-  //       isUserDataLoaded: true,
-  //     })
-  //   })
-  // }
-
   onProjectSelected(evt) {
     const projectId = evt.currentTarget.id
 
-    this.props.history.push(`/project/${projectId}`)
+    AppData.goToProject(projectId)
   }
 
   _onCreateProject() {
@@ -128,3 +100,11 @@ export class Dashboard extends React.Component {
     }
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    currentUser: state.currentUser,
+  }
+}
+
+export default connect(mapStateToProps)(Dashboard)

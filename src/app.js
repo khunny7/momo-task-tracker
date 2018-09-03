@@ -1,35 +1,39 @@
 import React from 'react'
 import { Button } from 'react-bootstrap'
-import { Dashboard } from './components/dashboard'
-import { Project } from './components/project'
-import { Sprint } from './components/sprint'
-import { Header } from './components/header'
+import { connect } from 'react-redux'
+import Dashboard from './components/dashboard'
+import Project from './components/project'
+import Sprint from './components/sprint'
+import Header from './components/header'
 import { Footer } from './components/footer'
-import { BrowserRouter, Route, Link } from 'react-router-dom'
+import { Route, withRouter } from 'react-router-dom'
 import { getUserAsync, saveUserAsync } from './repository/firebase-user-repository'
 import AppData from './data/index'
 import firebase from 'firebase/app'
 import 'firebase/database'
 import 'firebase/auth'
-import storeFactory from './store'
-import { setCurrentUser } from './store/actions'
-
-window.store = storeFactory()
 
 class App extends React.Component {
   constructor(props) {
     super(props)
 
-    this.state = {
-      currentUser: null,
-      currentProject: null,
-      currentSprint: null,
-      currentTask: null,
-    }
-
     this.onLogInClicked = this.onLogInClicked.bind(this)
 
     this._initFireBase()
+
+    AppData.setHistory(props.history)
+  }
+
+  componentWillMount() {
+    console.log('component will mount')
+
+    AppData.parsePath(this.props.location.pathname)
+  }
+
+  componentWillReceiveProps(newProps) {
+    console.log('component will receive props')
+
+    AppData.parsePath(newProps.location.pathname)
   }
 
   _initFireBase() {
@@ -50,9 +54,6 @@ class App extends React.Component {
           return getUserAsync(user.uid).then((savedUser) => {
             if (savedUser) {
               AppData.setCurrentAppUser(savedUser)
-              store.dispatch(setCurrentUser({
-                savedUser
-              }))
             } else {
               const userToSave = {
                 uid: user.uid,
@@ -64,10 +65,6 @@ class App extends React.Component {
 
               return saveUserAsync(userToSave).then(() => {
                 AppData.setCurrentAppUser(userToSave)
-
-                store.dispatch(setCurrentUser({
-                  userToSave
-                }))
               }).catch((error) => {
                 console.error(error)
               })
@@ -77,8 +74,6 @@ class App extends React.Component {
           })
         } else {
           AppData.setCurrentAppUser(null)
-
-          store.dispatch(setCurrentUser(null))
         }
       })
 
@@ -96,32 +91,9 @@ class App extends React.Component {
     })
   }
 
-  componentWillMount() {
-    this.setState({
-      currentUser: AppData.getCurrentAppUser()
-    })
-
-    this.appDataSubscriptionId = AppData.subscribeToAppUserChanged((currentUser) => {
-      this.setState({
-        currentUser,
-      })
-    })
-  }
-
-  componentWillUnmount() {
-    AppData.unsubscribeToAppUserChanged(this.appDataSubscriptionId)
-  }
-
   render() {
-    const showDashboard = (props) => (
-      <Dashboard
-        currentUser={this.state.currentUser}
-        history={props.history}
-      />
-    )
-
     const showButton = () => {
-      if (this.state.currentUser) {
+      if (this.props.currentUser) {
         return null
       } else {
         return <Button onClick={this.onLogInClicked}>Log in</Button>
@@ -130,19 +102,23 @@ class App extends React.Component {
 
     return (
       <div>
-        <BrowserRouter>
-          <div>
-            <Route path='/' component={Header} />
-            {showButton()}
-            <Route exact path='/' component={showDashboard} />
-            <Route exact path='/project/:id' component={Project} />
-            <Route exact path='/project/:pid/sprint/:sid' component={Sprint} />
-          </div>
-        </BrowserRouter>
+        <div>
+          <Header />
+          {showButton()}
+          <Dashboard />
+          <Route path='/project/:id' component={Project} />
+          <Route path='/project/:pid/sprint/:sid' component={Sprint} />
+        </div>
         <Footer />
       </div>
     )
   }
 }
 
-export default App
+const mapStateToProps = (state) => {
+  return {
+    currentUser: state.currentUser,
+  }
+}
+
+export default connect(mapStateToProps)(withRouter(App))
