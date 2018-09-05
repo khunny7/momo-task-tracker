@@ -1,0 +1,35 @@
+ @font-face {
+   font-family: 'Roboto-Thin';
+   src: url('./Roboto-Thin.ttf') format('ttf');
+   font-weight: 400;
+   font-style: normal;
+ }
+
+ .tomato-color {
+   color: red;
+   font-size: 40px;
+   font-family: 'Roboto-Thin';
+ }
+
+ #app-react-root {
+   min-width: 800px;
+ }
+
+ 
+// override bootstrap button style
+button.btn {
+  border: 0;
+  border-radius: 0;
+  background: rgba(100, 150, 150, 1.0);
+  color: white;
+  text-decoration: none;
+  min-width: 12em;
+  padding: 1em;
+  margin: 0.5em;
+  text-shadow: 0 0px 0 #FFF;
+
+  &:hover {
+    background: rgba(80, 130, 130, 1.0);
+    color: white;
+  }
+}

@@ -1,6 +1,6 @@
 import React from 'react'
 import _ from 'underscore'
-import { Button } from 'react-bootstrap'
+import { Button, Row, Col } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import 'react-block-ui/style.css'
 import { ProjectPreview } from '../project/preview'
@@ -78,12 +78,18 @@ class Dashboard extends React.Component {
     if (this.props.currentUser) {
       return (
         <div>
-          <div>
-            {this.props.currentUser.displayName}
-          </div>
-          <Button onClick={this.onCreateProject}>
-            Create Project
-            </Button>
+          <Row className="dashboard-header-container">
+            <Col sm={6}>
+              <div>
+                Hello, {this.props.currentUser.displayName}!
+              </div>
+              <Button onClick={this.onCreateProject}>
+                Create Project
+              </Button>
+            </Col>
+            <Col sm={6}>
+            </Col>
+          </Row>
           <CrudProject
             uid={this._getUserId()}
             isOpen={this.state.isCrudProjectOpen}

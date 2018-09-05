@@ -1,7 +1,6 @@
-import './style.css'
+import './style.less'
 import './css/bootstrap.min.css'
 import './css/bootstrap-theme.min.css'
-import './css/buttons.less'
 import React from 'react'
 import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom'
