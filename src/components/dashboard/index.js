@@ -61,16 +61,20 @@ class Dashboard extends React.Component {
 
       return (_.map(this.props.currentUser.projectPreviews, (projectInList) => {
         return (
-          <div
-            key={projectInList.id}
-            id={projectInList.id}
-            data-name={projectInList.name}
-            onClick={this.onProjectSelected}
-            className='project-preview-container'>
-            <ProjectPreview
-              projectPreviewItem={projectInList}
-            />
-          </div>
+          <Col
+            sm={4}
+            key={projectInList.id}>
+            <div
+
+              id={projectInList.id}
+              data-name={projectInList.name}
+              onClick={this.onProjectSelected}
+              className='project-preview-container'>
+              <ProjectPreview
+                projectPreviewItem={projectInList}
+              />
+            </div>
+          </Col>
         )
       }))
     }
@@ -80,7 +84,7 @@ class Dashboard extends React.Component {
         <div>
           <Row className="dashboard-header-container">
             <Col sm={6}>
-              <div>
+              <div className="name-container">
                 Hello, {this.props.currentUser.displayName}!
               </div>
               <Button onClick={this.onCreateProject}>
@@ -88,6 +92,17 @@ class Dashboard extends React.Component {
               </Button>
             </Col>
             <Col sm={6}>
+              <div className="extra-info">
+                <div>
+                  2 current projects
+              </div>
+                <div>
+                  3 completed projects with goals
+              </div>
+                <div>
+                  2 projects did not meet the goal.
+              </div>
+              </div>
             </Col>
           </Row>
           <CrudProject
@@ -96,9 +111,9 @@ class Dashboard extends React.Component {
             onSave={this.onProjectSaved}
             onCancel={this.onProjectCrudCanceled}
           />
-          <div>
+          <Row>
             {showProjectList()}
-          </div>
+          </Row>
         </div>
       )
     } else {

@@ -15,30 +15,29 @@ export class ProjectPreview extends React.Component {
 
   render() {
     return (
-      <div>
-        <div>
-          <span>Start Date</span>
-          <span>{(new Date(this.props.projectPreviewItem.start)).toLocaleDateString()}</span>
+      <div className="preview-content">
+        <div className="preview-content-header">
+          <div className="project-name">
+            {this.props.projectPreviewItem.name}
+          </div>
+          <div className="date-range">
+            <span>{(new Date(this.props.projectPreviewItem.start)).toLocaleDateString()}</span>
+            <span> - </span>
+            <span>{(new Date(this.props.projectPreviewItem.end)).toLocaleDateString()}</span>
+          </div>
         </div>
-        <div>
-          <span>End Date</span>
-          <span>{(new Date(this.props.projectPreviewItem.end)).toLocaleDateString()}</span>
-        </div>
-        <div>
-          <span>name</span>
-          <span>{this.props.projectPreviewItem.name}</span>
-        </div>
-        <div>
-          <span>description</span>
-          <span>{this.props.projectPreviewItem.description}</span>
-        </div>
-        <div>
-          <span>goal</span>
-          <span>{this.props.projectPreviewItem.goal}</span>
-        </div>
-        <div>
-          <span>progress</span>
-          <span>{this.props.projectPreviewItem.progress}</span>
+        <div className="preview-content-body">
+          <div>
+            {this.props.projectPreviewItem.description}
+          </div>
+          <div>
+            <span>goal</span>
+            <span>{this.props.projectPreviewItem.goal}</span>
+          </div>
+          <div>
+            <span>progress</span>
+            <span>{this.props.projectPreviewItem.progress}</span>
+          </div>
         </div>
       </div>
     )
