@@ -1,7 +1,6 @@
 .project-view-container {
   border: 1px solid #999999;
-  border-radius: 0.5em;
-  margin: 1em;
+  margin: 0.5em;
   overflow: hidden;
   .project-view-header {
     background-color: tomato;
@@ -15,20 +14,60 @@
 
 .preview-content {
   border: 1px solid rgb(80, 130, 130);
+  border-top: 0.5em solid rgb(50, 100, 100);
+  height: 18em;
+  margin: 0.5em;
+  cursor: pointer;
   .preview-content-header {
     padding: 0.5em;
     background-color: rgb(80, 130, 130);
     color: white;
     .project-name {
-      font-size: 2em;
+      font-size: 1.6em;
+      line-height: 1em;
+      height: 3em;
     }
     .date-range {
-      font-size: 1em;
+      font-size: 0.8em;
       text-align: right;
     }
   }
   .preview-content-body {
+    padding: 0.5em;
+    .preview-description {
+      height: 7.2em;
+    }
+    .progress-in-string {
+      text-align: right;
+      font-size: 0.8em;
+    }
+    .progress {
+      border-radius: 0;
+      .progress-bar {
+        border-radius: 0;
+        background-color: rgb(80, 130, 130);
+        background-image: linear-gradient(to bottom,rgb(100, 150, 150) 0,rgb(80, 130, 130) 100%);
+      }
+    }
+  }
+}
 
+.preview-content.minimized {
+  height: 5.1em;
+  margin-right: -30px;
+  .preview-content-header {
+    padding: 0.5em;
+    background-color: rgb(80, 130, 130);
+    color: white;
+    .project-name {
+      font-size: 1.2em;
+      line-height: 0.8em;
+      height: 2em;
+    }
+    .date-range {
+      font-size: 0.8em;
+      text-align: right;
+    }
   }
 }
 

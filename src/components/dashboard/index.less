@@ -1,20 +1,33 @@
-.project-preview-container {
-}
-
-.dashboard-header-container {
-  background-color: #EEEEEE;
-
-  button {
-    margin: 1em;
+.dashboard-content {
+  .dashboard-header-container {
+    background-color: #EEEEEE;
+    background-image: url('/bg1.png');
+    padding-bottom: 5em;
+    background-size: cover;
+    background-attachment: fixed;
+  
+    button {
+      margin: 1em;
+    }
+  
+    .name-container {
+      font-size: 2em;
+      margin: 0.5em;
+    }
+  
+    .extra-info {
+      font-size: 1.2em;
+      margin: 1em;
+    }
   }
 
-  .name-container {
-    font-size: 2em;
-    margin: 0.5em;
+  .project-preview-list {
+    margin-top: -4em;
   }
-
-  .extra-info {
-    font-size: 1.2em;
-    margin: 1em;
+  
+  .dashboard-header-minimized {
+    .name-container {
+      padding-left: 1em;
+    }
   }
 }

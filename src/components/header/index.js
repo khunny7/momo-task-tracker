@@ -59,7 +59,7 @@ class Header extends React.Component {
     }
 
     return (
-      <div>
+      <div className="main-header">
         <Breadcrumb>
           <Breadcrumb.Item onClick={() => AppData.goToUser(this.props.currentUser.id)}>Dashboard</Breadcrumb.Item>
           {getBreadCrumbProject()}

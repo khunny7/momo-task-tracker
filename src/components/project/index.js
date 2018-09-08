@@ -9,7 +9,6 @@ import {
   getDurationInHours,
   getDurationInString,
 } from '../../utils/time-utils'
-import './index.less'
 
 // Props
 // startDate
