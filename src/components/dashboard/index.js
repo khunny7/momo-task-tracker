@@ -109,7 +109,7 @@ class Dashboard extends React.Component {
 
     const isMinimized = !!(this.props.currentProject);
     const columnSizes = {
-      xs: isMinimized ? 6 : 12,
+      xs: isMinimized ? 4 : 12,
       md: isMinimized ? 3 : 6,
       lg: isMinimized ? 2 : 4,
     }

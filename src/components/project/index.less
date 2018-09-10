@@ -1,31 +1,64 @@
+@import '../../colors.less';
+
 .project-view-container {
-  border: 1px solid #999999;
+  border: 1px solid @salmon-dark;
   margin: 0.5em;
   overflow: hidden;
+
+  button.btn.btn-default {
+    margin-left: 0;
+    margin-right: 0;
+    background: @salmon;
+    &:hover {
+      background: @salmon-dark;
+    }
+  }
   .project-view-header {
-    background-color: tomato;
+    background-color: @salmon;
     color: white;
     padding: 0.5em;
     .name-container {
       font-size: 2em;
     }
+    .description-container {
+      font-size: 1em;
+      height: 2.5em;
+    }
+    .date-container {
+      font-size: 0.8em;
+      text-align: right;
+    }
+  }
+  .project-view-body {
+    padding: 0.5em;
+    .CircularProgressbar{
+      stroke: @salmon;
+      .CircularProgressbar-path {
+        stroke: @salmon;
+      }
+      .CircularProgressbar-text {
+        fill: @salmon;
+      }
+    }
   }
 }
 
 .preview-content {
-  border: 1px solid rgb(80, 130, 130);
-  border-top: 0.5em solid rgb(50, 100, 100);
+  border: 1px solid @teal;
+  border-top: 0.5em solid @teal-dark;
   height: 18em;
   margin: 0.5em;
   cursor: pointer;
   .preview-content-header {
     padding: 0.5em;
-    background-color: rgb(80, 130, 130);
+    background-color: @teal;
     color: white;
     .project-name {
       font-size: 1.6em;
       line-height: 1em;
       height: 3em;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .date-range {
       font-size: 0.8em;
@@ -45,8 +78,8 @@
       border-radius: 0;
       .progress-bar {
         border-radius: 0;
-        background-color: rgb(80, 130, 130);
-        background-image: linear-gradient(to bottom,rgb(100, 150, 150) 0,rgb(80, 130, 130) 100%);
+        background-color: @teal;
+        background-image: linear-gradient(to bottom,@teal 0,@teal-dark 100%);
       }
     }
   }
@@ -57,7 +90,7 @@
   margin-right: -30px;
   .preview-content-header {
     padding: 0.5em;
-    background-color: rgb(80, 130, 130);
+    background-color: @teal;
     color: white;
     .project-name {
       font-size: 1.2em;
@@ -69,12 +102,4 @@
       text-align: right;
     }
   }
-}
-
-.sprint-preview-container {
-  width: 200px;
-  border: 1px solid seagreen;
-  border-radius: 0.5em;
-  display: inline-block;
-  margin: 0.5em;
 }

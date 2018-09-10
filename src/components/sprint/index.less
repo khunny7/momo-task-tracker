@@ -1,3 +1,5 @@
+@import '../../colors.less';
+
 .sprint-view-container {
   border: 1px solid #999999;
   border-radius: 15px;
@@ -13,5 +15,45 @@
   }
   .circular-progress-container {
     margin: 1em;
+  }
+}
+
+.sprint-preview-content {
+  border: 1px solid @salmon;
+  border-top: 0.5em solid @salmon-dark;
+  height: 18em;
+  .sprint-preview-header {
+    padding: 0.5em;
+    background-color: @salmon;
+    color: white;
+    .name-container {
+      font-size: 1.6em;
+      line-height: 1em;
+      height: 3em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .date-range {
+      font-size: 0.8em;
+      text-align: right;
+    }
+  }
+  .preview-content-body {
+    padding: 0.5em;
+    .preview-description {
+      height: 7.2em;
+    }
+    .progress-in-string {
+      text-align: right;
+      font-size: 0.8em;
+    }
+    .progress {
+      border-radius: 0;
+      .progress-bar {
+        border-radius: 0;
+        background-color: @salmon;
+        background-image: linear-gradient(to bottom,@salmon 0,@salmon-dark 100%);
+      }
+    }
   }
 }
