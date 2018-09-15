@@ -1,12 +1,12 @@
 @import '../../colors.less';
 
 .sprint-view-container {
-  border: 1px solid #999999;
-  border-radius: 15px;
-  margin: 1em;
+  border: 1px solid @rose-dark;
+  margin: 0.5em;
+  margin-top: 0;
   overflow: hidden;
   .sprint-view-header {
-    background-color: seagreen;
+    background-color: @rose;
     color: white;
     padding: 0.5em;
     .name-container {
@@ -19,13 +19,14 @@
 }
 
 .sprint-preview-content {
-  border: 1px solid @salmon;
-  border-top: 0.5em solid @salmon-dark;
+  border: 1px solid @rose;
+  border-top: 0.5em solid @rose-dark;
   height: 18em;
   .sprint-preview-header {
     padding: 0.5em;
-    background-color: @salmon;
+    background-color: @rose;
     color: white;
+    cursor: pointer;
     .name-container {
       font-size: 1.6em;
       line-height: 1em;
@@ -36,6 +37,9 @@
     .date-range {
       font-size: 0.8em;
       text-align: right;
+    }
+    &:hover {
+      background-color: @rose-dark;
     }
   }
   .preview-content-body {

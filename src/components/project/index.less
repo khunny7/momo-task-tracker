@@ -43,15 +43,47 @@
   }
 }
 
+.project-view-container.minimized {
+  margin-bottom: 0;
+
+  &:hover {
+    .project-view-header {
+      background: @salmon-dark;
+      .description-container {
+        display: block;
+      }
+    }
+    .project-view-body {
+      display: block;
+      .progress-container {
+        display: none;
+      }
+      button {
+        display: none;
+      }
+    }
+  }
+
+  .project-view-header {
+    cursor: pointer;
+    .description-container {
+      display: none;
+    }
+  }
+  .project-view-body {
+    display: none;
+  }
+}
+
 .preview-content {
-  border: 1px solid @teal;
-  border-top: 0.5em solid @teal-dark;
+  border: 1px solid @salmon;
+  border-top: 0.5em solid @salmon-dark;
   height: 18em;
   margin: 0.5em;
-  cursor: pointer;
   .preview-content-header {
+    cursor: pointer;
     padding: 0.5em;
-    background-color: @teal;
+    background-color: @salmon;
     color: white;
     .project-name {
       font-size: 1.6em;
@@ -63,6 +95,9 @@
     .date-range {
       font-size: 0.8em;
       text-align: right;
+    }
+    &:hover {
+      background-color: @salmon-dark;
     }
   }
   .preview-content-body {
@@ -90,7 +125,7 @@
   margin-right: -30px;
   .preview-content-header {
     padding: 0.5em;
-    background-color: @teal;
+    background-color: @salmon;
     color: white;
     .project-name {
       font-size: 1.2em;
@@ -100,6 +135,9 @@
     .date-range {
       font-size: 0.8em;
       text-align: right;
+    }
+    &:hover {
+      background-color: @salmon-dark;
     }
   }
 }

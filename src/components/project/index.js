@@ -29,6 +29,7 @@ class Project extends React.Component {
     }
 
     this.onClickSprint = this._onClickSprint.bind(this)
+    this.onClickProject = this._onClickProject.bind(this)
     this.onCreateSprint = this._onCreateSprint.bind(this)
     this.onSprintCrudCanceled = this._onSprintCrudCanceled.bind(this)
     this.onSprintSaved = this._onSprintSaved.bind(this)
@@ -46,6 +47,10 @@ class Project extends React.Component {
     })
   }
 
+  _onClickProject(evt) {
+    AppData.goToProject(this.props.currentProject.id)
+  }
+
   _onSprintSaved() {
     this.setState({
       isCrudSprintOpen: false,
@@ -61,10 +66,12 @@ class Project extends React.Component {
   }
 
   render() {
+    const containerClassName = !this.props.currentSprint ? 'project-view-container' : 'project-view-container minimized'
+
     if (this.props.currentProject) {
       return (
-        <div className='project-view-container'>
-          <div className='project-view-header'>
+        <div className={containerClassName}>
+          <div className='project-view-header' onClick={this.onClickProject}>
             <div className='name-container'>
               Project: {this.props.currentProject.name}
             </div>
@@ -78,10 +85,10 @@ class Project extends React.Component {
             </div>
           </div>
           <div className='project-view-body row'>
-            <Col xs={6} sm={4} md={3} lg={2}>
+            <Col xs={6} sm={4} md={3} lg={2} className="progress-container">
               <div>
                 {getDurationInString(this.props.currentProject.progress, 'progress')} / {this.props.currentProject.goal} achieved
-            </div>
+              </div>
               <CircularProgressbar
                 percentage={getDurationInHours(this.props.currentProject.progress) / this.props.currentProject.goal * 100}
                 text={getDurationInString(this.props.currentProject.progress)}
@@ -92,7 +99,7 @@ class Project extends React.Component {
             <Col xs={12} sm={8} md={9} lg={10}>
               <Button onClick={this.onCreateSprint}>
                 Create New Sprint
-            </Button>
+              </Button>
               <Row>
                 <div className='sprints-container'>
                   {
@@ -137,6 +144,7 @@ const mapStateToProps = (state) => {
   return {
     currentUser: state.currentUser,
     currentProject: state.currentProject,
+    currentSprint: state.currentSprint,
   }
 }
 
