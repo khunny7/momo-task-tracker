@@ -34,9 +34,18 @@ export const currentTask = (state = null, action) => {
   }
 }
 
+export const taskOnEdit = (state = null, action) => {
+  if (action.type === C.setTaskOnEdit) {
+    return action.payload
+  } else {
+    return state
+  }
+}
+
 export default combineReducers({
   currentUser,
   currentProject,
   currentSprint,
   currentTask,
+  taskOnEdit,
 })

@@ -5,6 +5,16 @@
   margin: 0.5em;
   margin-top: 0;
   overflow: hidden;
+
+  button.btn.btn-default {
+    margin-left: 0;
+    margin-right: 0.5em;
+    background: @olive;
+    &:hover {
+      background: @olive-dark;
+    }
+  }
+
   .sprint-view-header {
     background-color: @rose;
     color: white;
@@ -12,9 +22,22 @@
     .name-container {
       font-size: 2em;
     }
+    .date-range-container {
+      font-size: 0.8em;
+      text-align: right;
+    }
   }
-  .circular-progress-container {
-    margin: 1em;
+  .sprint-view-body {
+    padding: 0.5em;
+    .CircularProgressbar{
+      stroke: @rose;
+      .CircularProgressbar-path {
+        stroke: @rose;
+      }
+      .CircularProgressbar-text {
+        fill: @rose;
+      }
+    }
   }
 }
 

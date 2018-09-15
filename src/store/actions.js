@@ -28,9 +28,17 @@ const setCurrentTask = (payload) => {
   }
 }
 
+const setTaskOnEdit = (payload) => {
+  return {
+    type: C.setTaskOnEdit,
+    payload,
+  }
+}
+
 export {
   setCurrentUser,
   setCurrentProject,
   setCurrentSprint,
   setCurrentTask,
+  setTaskOnEdit,
 }

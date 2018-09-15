@@ -120,17 +120,22 @@ const _getUpdatedProjectDataAsync = (pid, sprintData) => {
   })
 }
 
-const createTaskAsync = (task, sid, pid) => {
+const saveTaskAsync = (task, sid, pid) => {
   const database = firebase.database()
-  const newTaskKey = database.ref().child('tasks').push().key
+
+  let taskKey = task.id;
+
+  if (!taskKey) {
+    taskKey = database.ref().child('tasks').push().key
+  }
 
   const taskData = _.extend({
-    id: newTaskKey,
+    id: taskKey,
     timeStamp: firebase.database.ServerValue.TIMESTAMP,
   }, task)
 
   const updates = {};
-  updates['/tasks/' + newTaskKey] = taskData
+  updates['/tasks/' + taskKey] = taskData
 
   return _getUpdatedSprintDataAsync(sid, taskData).then((updatedSprintData) => {
     updates['/sprints/' + sid] = updatedSprintData
@@ -149,14 +154,10 @@ const createTaskAsync = (task, sid, pid) => {
   })
 }
 
-const updateTaskAsync = (task, sid) => {
-  return
-}
-
 export {
   createProjectAsync,
   getProjectAsync,
   createSprintAsync,
   getSprintAsync,
-  createTaskAsync,
+  saveTaskAsync,
 }

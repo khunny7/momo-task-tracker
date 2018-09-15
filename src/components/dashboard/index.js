@@ -6,7 +6,6 @@ import 'react-block-ui/style.css'
 import { ProjectPreview } from '../project/preview'
 import { CrudProject } from '../project/crud-project'
 import AppData from '../../data/index'
-import './index.less'
 
 class Dashboard extends React.Component {
   constructor(props) {

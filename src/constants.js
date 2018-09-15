@@ -3,6 +3,7 @@ const constants = {
   setCurrentProject: "setCurrentProject",
   setCurrentSprint: "setCurrentSprint",
   setCurrentTask: 'setCurrentTask',
+  setTaskOnEdit: 'setTaskOnEdit',
 }
 
 export default constants

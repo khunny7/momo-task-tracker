@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import {
   FormGroup,
   ControlLabel,
@@ -17,19 +18,26 @@ import { Modal } from '../modal'
 import { TimerView } from '../timer-view'
 import 'react-circular-progressbar/dist/styles.css'
 import { getDurationInString } from '../../utils/time-utils'
-import { createTaskAsync } from '../../repository/firebase-data-repository'
-import './index.less'
+import { saveTaskAsync } from '../../repository/firebase-data-repository'
 
-export class CrudTask extends React.Component {
+class CrudTask extends React.Component {
   constructor(props) {
     super(props)
 
-    this.state = {
+    const initialState = {
       taskName: '',
       isRunning: false,
       timerInMinutes: 20,
       isBlocking: false,
+      runs: [],
     }
+
+    if (this.props.taskOnEdit) {
+      initialState.taskName = this.props.taskOnEdit.name
+      initialState.runs = this.props.taskOnEdit.runs
+    }
+
+    this.state = initialState;
 
     this.onTaskNameChange = this._onTaskNameChange.bind(this)
     this.onClose = this._onClose.bind(this)
@@ -82,7 +90,7 @@ export class CrudTask extends React.Component {
       isBlocking: true,
     })
 
-    return createTaskAsync({
+    return saveTaskAsync({
       name: this.state.taskName,
       runs: [
         {
@@ -90,9 +98,11 @@ export class CrudTask extends React.Component {
           end: this.state.end,
         }
       ]
-    }, this.props.sid, this.props.pid).then((savedTask) => {
-      this.props.onTaskSaved(savedTask)
-    })
+    }, this.props.sid, this.props.pid);
+
+    // .then((savedTask) => {
+    //   this.props.onTaskSaved(savedTask)
+    // })
   }
 
   _onTimerInMinuteChange(e) {
@@ -121,7 +131,7 @@ export class CrudTask extends React.Component {
                 <HelpBlock>Task name is optional</HelpBlock>
               </FormGroup>
               <Row>
-                <Col xs={4} sm={2}>
+                <Col xs={4} sm={5} md={6} lg={8}>
                   <ButtonToolbar>
                     <ButtonGroup>
                       <Button
@@ -130,22 +140,20 @@ export class CrudTask extends React.Component {
                       >
                         <Glyphicon
                           glyph={this.state.isRunning ? 'stop' : 'play'}
-                          style={{
-                            fontSize: '48px',
-                            color: '#666666'
-                          }}
                         />
-                        <div style={{
-                          color: '#666666'
-                        }}>
+                        <div>
                           {this.state.isRunning ? 'End' : 'Start'}
                         </div>
                       </Button>
                     </ButtonGroup>
+                    <Button
+                      onClick={this.onClose}>
+                      Close
+                     </Button>
                   </ButtonToolbar>
                 </Col>
-                <Col xs={1} sm={4}></Col>
-                <Col xs={7} sm={6}>
+                <Col xs={1} sm={1} md={1} lg={1}></Col>
+                <Col xs={7} sm={6} md={5} lg={3}>
                   <ControlLabel className='timer-input-label'>Timer set (mins): </ControlLabel>
                   <FormControl
                     className='timer-input-form'
@@ -153,20 +161,16 @@ export class CrudTask extends React.Component {
                     value={this.state.timerInMinutes}
                     onChange={this.onTimerInMinuteChange}
                   />
-                  <CircularProgressbar
-                    percentage={(this.state.end - this.state.start) / 1000 / 60 / this.state.timerInMinutes * 100 % 100}
-                    text={getDurationInString(this.state.end - this.state.start)}
-                    initialAnimation={true}
-                    strokeWidth={5}
-                  />
+                  <div className='progress-container'>
+                    <CircularProgressbar
+                      percentage={(this.state.end - this.state.start) / 1000 / 60 / this.state.timerInMinutes * 100 % 100}
+                      text={getDurationInString(this.state.end - this.state.start)}
+                      initialAnimation={true}
+                      strokeWidth={5}
+                    />
+                  </div>
                 </Col>
               </Row>
-              <div>
-                <Button
-                  onClick={this.onClose}>
-                  Close
-               </Button>
-              </div>
             </div>
           </BlockUi>
         </Modal>
@@ -174,3 +178,13 @@ export class CrudTask extends React.Component {
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    taskOnEdit: state.taskOnEdit,
+    pid: state.currentProject ? state.currentProject.id : null,
+    sid: state.currentSprint ? state.currentSprint.id : null,
+  }
+}
+
+export default connect(mapStateToProps)(CrudTask)

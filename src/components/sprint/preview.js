@@ -4,7 +4,6 @@ import {
   getDurationInHours,
   getDurationInString,
 } from '../../utils/time-utils'
-import './index.less'
 
 export class SprintPreview extends React.Component {
   constructor(props) {
